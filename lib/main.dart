@@ -1,6 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
-import './piece.dart';
+import 'puzzle_piece.dart';
 import './puzzle_board.dart';
 import './puzzle_target.dart';
 import './puzzle_pieces_stack.dart';
@@ -15,37 +17,48 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  List<PuzzlePiece> pieces = [
-    PuzzlePiece(width: 150, height: 100, number: 1),
-    PuzzlePiece(width: 150, height: 100, number: 2),
-    PuzzlePiece(width: 150, height: 100, number: 3),
-    PuzzlePiece(width: 150, height: 100, number: 4)
-  ];
+  List<PuzzlePiece> pieces = [];
 
   List<PuzzleTarget> targets = [];
 
   void removePieceFromPile(int pxNumber) {
-    print("removing");
     setState(() {
       pieces.removeWhere((element) {
         return element.number == pxNumber;
       });
     });
-    print("Length: ${pieces.length}");
   }
 
-  void showModal() {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return Text('Modal bottom sheet', style: TextStyle(fontSize: 30));
-      },
-    );
+  void createPuzzlePieces(
+    int amount,
+    double pieceWidth,
+    double pieceHeight,
+  ) {
+    if (pieces.isEmpty) {
+      for (int i = 0; i < amount; i++) {
+        pieces.add(PuzzlePiece(
+          width: pieceWidth,
+          height: pieceHeight,
+          targetWidth: pieceWidth,
+          targetHeight: pieceHeight,
+          number: i,
+        ));
+      }
+    }
   }
-  //TODO when placing pieces, stack only gets updated the first time
+
+  int verticalAmount = 3;
+  int horizontalAmount = 3;
+  double imageWidth = 100;
+  double imageHeight = 80;
 
   @override
   Widget build(BuildContext context) {
+    createPuzzlePieces(
+      verticalAmount * horizontalAmount,
+      imageWidth,
+      imageHeight,
+    );
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
@@ -54,17 +67,19 @@ class MyAppState extends State<MyApp> {
         body: Column(
           children: [
             IndexedStack(
-              //TODO Make sure item gets removed from stack as well
-              children: pieces,
+              children: [...pieces],
             ),
             Visibility(
               child: Text("No more pieces left"),
               visible: pieces.isEmpty,
             ),
             PuzzleBoard(
-                verticalSpaces: 2,
-                horizontalSpaces: 2,
-                removeFromPile: removePieceFromPile)
+              width: imageWidth,
+              height: imageHeight,
+              verticalSpaces: verticalAmount,
+              horizontalSpaces: horizontalAmount,
+              removeFromPile: removePieceFromPile,
+            ),
           ],
         ),
       ),
