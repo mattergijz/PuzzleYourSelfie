@@ -1,0 +1,15 @@
+- amountOfLevels: 3
+  - level1:
+
+-levels:
+  - level1:
+    - amountOfPieces: 9
+    - levelPassed: false
+
+  - level2:
+    - amountOfPieces: 16
+    - levelPassed: false
+
+  - level3:
+    - amountOfPieces: 25
+    - levelPassed: false
