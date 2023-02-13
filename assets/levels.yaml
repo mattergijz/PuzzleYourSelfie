@@ -1,7 +1,4 @@
-- amountOfLevels: 3
-  - level1:
-
--levels:
+- levels:
   - level1:
     - amountOfPieces: 9
     - levelPassed: false

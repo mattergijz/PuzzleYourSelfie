@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:first_app/widgets/puzzle_piece.dart';
 import 'package:flutter/material.dart';
-import "package:flutter/services.dart" as service;
-import "package:yaml/yaml.dart";
+import 'package:flutter/services.dart' as service;
+import 'package:yaml/yaml.dart';
 
+import '../models/level.dart';
 import '../widgets/puzzle_board.dart';
 
 class PuzzleScreen extends StatefulWidget {
@@ -21,19 +24,23 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
   bool puzzleWasInitialized = false;
 
   List<PuzzlePiece> pieces = [];
+  List<Level> levels = [];
 
-  Future<void> createNextLevel(int nextLevel) async {
-    final data = await service.rootBundle.loadString('assets/levels.yaml');
-    final List<Map<String, Object>> levelData = loadYaml(data);
-    print(levelData[0]);
-    // print(levelData['level${widget.level.toString()}']);
-    // if (widget.level == 1) {
-    //   createPuzzlePieces(levelData['level${widget.level}']);
-    //   return;
-    // }
-    // if (levelData['level$nextLevel'] != null) {
+  void createNextLevel(int nextLevel) {}
 
-    // }
+  Future<void> getVariablesFromEnvironment() async {
+    final String data =
+        await service.rootBundle.loadString('assets/levels.yaml');
+    final YamlList yamlData = loadYaml(data);
+    List<dynamic> yamlDataList = yamlData[0]['levels'];
+    Map<int, dynamic> yamlMap = yamlDataList.asMap();
+    yamlMap.forEach(
+      (key, value) {
+        levels.add(Level(value['level${key + 1}'][0]['amountOfPieces'],
+            value['level${key + 1}'][1]['levelPassed'] as bool));
+      },
+    );
+    print(levels.toString());
   }
 
   void createPuzzlePieces(
@@ -70,7 +77,7 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
 
   @override
   Widget build(BuildContext context) {
-    createNextLevel(1);
+    getVariablesFromEnvironment();
     return Builder(builder: (context) {
       return Scaffold(
         appBar: AppBar(
