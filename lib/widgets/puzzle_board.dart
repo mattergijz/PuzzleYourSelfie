@@ -5,9 +5,7 @@ import './puzzle_target.dart';
 class PuzzleBoard extends StatelessWidget {
   final int verticalSpaces;
   final int horizontalSpaces;
-
-  final double width;
-  final double height;
+  final double availableWidth;
 
   final Function removeFromPile;
 
@@ -15,8 +13,8 @@ class PuzzleBoard extends StatelessWidget {
       {required this.verticalSpaces,
       required this.horizontalSpaces,
       required this.removeFromPile,
-      required this.width,
-      required this.height});
+      required this.availableWidth
+      });
 
   List<PuzzleTarget> createTargets() {
     List<PuzzleTarget> targets = [];
@@ -24,8 +22,8 @@ class PuzzleBoard extends StatelessWidget {
     for (int i = 0; i < totalSpaces; i++) {
       targets.add(
         PuzzleTarget(
-          width: width,
-          height: height,
+          width: availableWidth / horizontalSpaces,
+          height: availableWidth / verticalSpaces,
           correctImageNumber: i,
           removePieceFromPile: removeFromPile,
         ),
@@ -37,10 +35,8 @@ class PuzzleBoard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: width * horizontalSpaces,
-      height: height * verticalSpaces,
+      width: availableWidth,
       child: GridView.count(
-        childAspectRatio: width / height,
         physics: NeverScrollableScrollPhysics(),
         crossAxisCount: horizontalSpaces,
         shrinkWrap: true,

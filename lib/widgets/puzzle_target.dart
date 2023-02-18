@@ -23,6 +23,10 @@ class _PuzzleTargetState extends State<PuzzleTarget> {
 
   @override
   Widget build(BuildContext context) {
+    String imagePath =
+        'assets/images/testpuzzel1/piece_${widget.correctImageNumber}.jpg';
+    print("!!!!!!!!!!!!!!");
+    print("TargetWidth: ${widget.width}");
     return DragTarget<String>(
       builder: (
         BuildContext context,
@@ -30,37 +34,34 @@ class _PuzzleTargetState extends State<PuzzleTarget> {
         List<dynamic> rejected,
       ) {
         return Container(
-          width: widget.width,
-          height: widget.height,
-          child: Container(
-            width: widget.width,
-            height: widget.height,
-            child: isDropped
-                ? Stack(
-                    children: [
-                      Image.asset(
-                        'assets/images/poep/piece_${widget.correctImageNumber}.jpg',
-                        color: Colors.white.withOpacity(1),
-                        colorBlendMode: BlendMode.modulate,
-                        width: widget.width,
-                        height: widget.height,
-                      ),
-                      Center(
-                        child: Text(
-                          widget.correctImageNumber.toString(),
-                          style: TextStyle(fontSize: 20, color: Colors.red),
-                        ),
-                      ),
-                    ],
-                  )
-                : Image.asset(
-                    'assets/images/poep/piece_${widget.correctImageNumber}.jpg',
-                    color: Colors.white.withOpacity(0.5),
-                    colorBlendMode: BlendMode.modulate,
-                    width: widget.width,
-                    height: widget.height,
-                  ),
-          ),
+          
+          child: isDropped
+              ? Stack(
+                  children: [
+                    Image.asset(
+                      imagePath,
+                      color: Colors.white.withOpacity(1),
+                      colorBlendMode: BlendMode.modulate,
+                      fit: BoxFit.cover,
+                      width: widget.width,
+                      height: widget.height,
+                    ),
+                    // Center(
+                    //   child: Text(
+                    //     widget.correctImageNumber.toString(),
+                    //     style: TextStyle(fontSize: 20, color: Colors.red),
+                    //   ),
+                    // ),
+                  ],
+                )
+              : Image.asset(
+                  imagePath,
+                  color: Colors.white.withOpacity(0.2),
+                  colorBlendMode: BlendMode.modulate,
+                  fit: BoxFit.cover,
+                  width: widget.width,
+                  height: widget.height,
+                ),
         );
       },
       onAccept: (data) {

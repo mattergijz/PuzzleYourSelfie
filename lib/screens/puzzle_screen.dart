@@ -1,4 +1,6 @@
+import 'dart:collection';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:first_app/widgets/puzzle_piece.dart';
 import 'package:flutter/material.dart';
@@ -24,42 +26,43 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
   bool puzzleWasInitialized = false;
 
   List<PuzzlePiece> pieces = [];
-  List<Level> levels = [];
 
-  void createNextLevel(int nextLevel) {}
+  late Level currentLevel;
 
-  Future<void> getVariablesFromEnvironment() async {
-    final String data =
-        await service.rootBundle.loadString('assets/levels.yaml');
-    final YamlList yamlData = loadYaml(data);
-    List<dynamic> yamlDataList = yamlData[0]['levels'];
-    Map<int, dynamic> yamlMap = yamlDataList.asMap();
-    yamlMap.forEach(
-      (key, value) {
-        levels.add(Level(value['level${key + 1}'][0]['amountOfPieces'],
-            value['level${key + 1}'][1]['levelPassed'] as bool));
-      },
-    );
-    print(levels.toString());
+  void createNextLevel(Queue levels) {
+    if (levels.isNotEmpty) {
+      Level nextLevel = levels.last;
+      createPuzzlePieces(nextLevel);
+      levels.removeFirst();
+    }
   }
 
-  void createPuzzlePieces(
-    int amount,
-  ) {
-    double pieceWidth = MediaQuery.of(context).size.width / (amount / 2);
-    double pieceHeight = MediaQuery.of(context).size.height / (amount / 2);
+  void createPuzzlePieces(Level level) {
+    int amount = level.amountOfTiles;
+    double pieceHeight = MediaQuery.of(context).size.height * 0.10;
+    // double pieceWidth = MediaQuery.of(context).size.width / 3;
+    double pieceWidth = pieceHeight;
+    double targetWidth =
+        (MediaQuery.of(context).size.width * 0.95) / sqrt(amount);
+    double targetHeight = MediaQuery.of(context).size.height / sqrt(amount);
+    print("____________");
+    print(pieceWidth);
+    print(targetWidth);
     if (pieces.isEmpty && !puzzleWasInitialized) {
       puzzleWasInitialized = true;
       for (int i = 0; i < amount; i++) {
-        pieces.add(PuzzlePiece(
-          width: pieceWidth,
-          height: pieceHeight,
-          targetWidth: pieceWidth,
-          targetHeight: pieceHeight,
-          number: i,
-        ));
+        setState(() {
+          pieces.add(PuzzlePiece(
+            width: pieceWidth,
+            height: pieceHeight,
+            targetWidth: targetWidth,
+            targetHeight: targetWidth,
+            number: i,
+          ));
+        });
       }
     }
+    pieces.shuffle();
   }
 
   void removePieceFromPile(int pxNumber) {
@@ -70,36 +73,38 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
     });
   }
 
-  int verticalAmount = 3;
-  int horizontalAmount = 3;
-  double imageWidth = 100;
-  double imageHeight = 80;
+  double imageHeight = 100;
 
   @override
   Widget build(BuildContext context) {
-    getVariablesFromEnvironment();
+    final arguments =
+        ModalRoute.of(context)?.settings.arguments as Map<String, Object>;
+    currentLevel = arguments['level'] as Level;
+    createPuzzlePieces(arguments['level'] as Level);
     return Builder(builder: (context) {
       return Scaffold(
         appBar: AppBar(
-          title: Text("Puzzle level ${widget.level}"),
+          title: Text(
+              "Puzzle level ${widget.level}: ${currentLevel.amountOfTiles} pieces"),
         ),
-        body: Center(
-          child: Container(
+        body: Container(
+          child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IndexedStack(
                   children: [...pieces],
+                  sizing: StackFit.loose,
                 ),
                 Visibility(
                   child: Text("No more pieces left"),
                   visible: pieces.isEmpty,
                 ),
                 PuzzleBoard(
-                  width: imageWidth,
-                  height: imageHeight,
-                  verticalSpaces: verticalAmount,
-                  horizontalSpaces: horizontalAmount,
+                  availableWidth: (MediaQuery.of(context).size.width * 0.95)
+                      .floorToDouble(),
+                  verticalSpaces: sqrt(currentLevel.amountOfTiles).toInt(),
+                  horizontalSpaces: sqrt(currentLevel.amountOfTiles).toInt(),
                   removeFromPile: removePieceFromPile,
                 ),
               ],
