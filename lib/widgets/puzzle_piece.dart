@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class PuzzlePiece extends StatelessWidget {
   final int number;
-  final double width;
-  final double height;
+  double width;
+  double height;
   final double targetWidth;
   final double targetHeight;
 
@@ -13,37 +13,41 @@ class PuzzlePiece extends StatelessWidget {
     required this.height,
     required this.targetWidth,
     required this.targetHeight,
-  });
+  }){
+    if(targetWidth > width && targetHeight > height) {
+      width = targetWidth;
+      height = targetHeight;
+    }
+    // print("puzzlePiece - number: ${this.number}");
+    // print("puzzlePiece - width: ${this.width}");  
+    // print("puzzlePiece - height: ${this.height}");
+    // print("puzzlePiece - targetWidth: ${this.targetWidth}");
+    // print("puzzlePiece - targetHeight: ${this.targetHeight}");
+    // print("-------------------");
+  }
 
   @override
   Widget build(BuildContext context) {
-    String imagePath = 'assets/images/poep/piece_$number.jpg';
+    String imagePath = 'assets/images/testpuzzel1/piece_$number.jpg';
+    print("----------$height--------------");
     return Container(
       width: width,
       height: height,
-      padding: EdgeInsets.all(0),
       child: Draggable<String>(
         data: number.toString(),
-        child: Stack(
-          children: [
-            Image.asset(
-              imagePath,
-              fit: BoxFit.fill,
-            ),
-            Text(number.toString())
-          ],
+        child: Image.asset(
+          imagePath,
+          width: width,
+          fit: BoxFit.cover,
         ),
         childWhenDragging: Image.asset(
           imagePath,
-          fit: BoxFit.fill,
           color: Colors.red.withOpacity(0.8),
           colorBlendMode: BlendMode.modulate,
         ),
         feedback: Image.asset(
           imagePath,
-          fit: BoxFit.fill,
           width: targetWidth,
-          height: targetHeight,
           color: Colors.blue.withOpacity(0.8),
           colorBlendMode: BlendMode.modulate,
         ),
