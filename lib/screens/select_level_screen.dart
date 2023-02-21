@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cross_file_image/cross_file_image.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../models/level.dart';
@@ -14,15 +15,17 @@ class SelectLevelScreen extends StatefulWidget {
 class _SelectLevelScreenState extends State<SelectLevelScreen> {
   String? dropDownValue = "1";
 
-  Future<XFile?> waitForImageToBeSelected() async {
+  Future<Image> waitForImageToBeSelected() async {
     final ImagePicker _picker = ImagePicker();
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    return image;
+
+    return Image(image: XFileImage(image!));
   }
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, Object> arguments = ModalRoute.of(context)!.settings.arguments as Map<String, Object>;
+    final Map<String, Object> arguments =
+        ModalRoute.of(context)!.settings.arguments as Map<String, Object>;
     List<Level> levels = arguments['levels'] as List<Level>;
     return Scaffold(
       appBar: AppBar(
@@ -72,7 +75,11 @@ class _SelectLevelScreenState extends State<SelectLevelScreen> {
             ),
             SizedBox(height: 50),
             ElevatedButton(
-              onPressed: waitForImageToBeSelected,
+              onPressed: () {
+                waitForImageToBeSelected().then((image) {
+                  arguments['image'] = image;
+                });
+              },
               child: Text('Select image'),
             ),
             SizedBox(height: 50),

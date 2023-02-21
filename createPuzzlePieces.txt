@@ -1,0 +1,27 @@
+  void createPuzzlePieces(Level level) {
+    int amount = level.amountOfTiles;
+    double pieceHeight = MediaQuery.of(context).size.height * 0.10;
+    // double pieceWidth = MediaQuery.of(context).size.width / 3;
+    double pieceWidth = pieceHeight;
+    double targetWidth =
+        (MediaQuery.of(context).size.width * 0.95) / sqrt(amount);
+    double targetHeight = MediaQuery.of(context).size.height / sqrt(amount);
+    print("____________");
+    print(pieceWidth);
+    print(targetWidth);
+    if (pieces.isEmpty && !puzzleWasInitialized) {
+      puzzleWasInitialized = true;
+      for (int i = 0; i < amount; i++) {
+        setState(() {
+          pieces.add(PuzzlePiece(
+            width: pieceWidth,
+            height: pieceHeight,
+            targetWidth: targetWidth,
+            targetHeight: targetWidth,
+            number: i,
+          ));
+        });
+      }
+    }
+    pieces.shuffle();
+  }

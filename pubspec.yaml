@@ -32,8 +32,8 @@ dependencies:
   js: ^0.6.4
   image_picker: ^0.8.6+1
   http: ^0.13.5
-  starflut: ^1.0.0
-
+  flutter_jigsaw_puzzle: ^0.1.0
+  cross_file_image: ^1.0.0
 
 
 dev_dependencies:

@@ -25,8 +25,8 @@ class _PuzzleTargetState extends State<PuzzleTarget> {
   Widget build(BuildContext context) {
     String imagePath =
         'assets/images/testpuzzel1/piece_${widget.correctImageNumber}.jpg';
-    print("!!!!!!!!!!!!!!");
-    print("TargetWidth: ${widget.width}");
+    // print("!!!!!!!!!!!!!!");
+    // print("TargetWidth: ${widget.width}");
     return DragTarget<String>(
       builder: (
         BuildContext context,
