@@ -5,8 +5,8 @@
 import FlutterMacOS
 import Foundation
 
-import starflut
+import path_provider_foundation
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
-  StarflutPlugin.register(with: registry.registrar(forPlugin: "StarflutPlugin"))
+  PathProviderPlugin.register(with: registry.registrar(forPlugin: "PathProviderPlugin"))
 }

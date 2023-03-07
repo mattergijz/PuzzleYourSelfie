@@ -1,103 +1,264 @@
 import 'dart:collection';
-import 'package:http/http.dart' as http;
-import 'package:flutter/material.dart';
+import 'dart:io';
 import 'package:flutter/services.dart' as service;
-import 'package:image_picker/image_picker.dart';
-
-import '../screens/puzzle_screen.dart';
-import '../screens/select_level_screen.dart';
-
 import 'package:yaml/yaml.dart';
 
-import 'models/level.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:new_package_demo/screens/level_screen.dart';
+import 'package:path_provider/path_provider.dart';
 
-void main() => runApp(MyApp());
+import 'jigsaw.dart';
+import 'models/level_model.dart';
+import 'services/image_service.dart';
+import 'services/level_service.dart';
 
-class MyApp extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return MyAppState();
-  }
+void main() {
+  runApp(const MyApp());
 }
 
-class MyAppState extends State<MyApp> {
+class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool dataLoaded = false;
+  @override
+  void initState() {
+    LevelService.getVariablesFromEnvironment().then((_) {
+      setState(() {
+        dataLoaded = true;
+      });
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      routes: {
-        PuzzleScreen.screenRoute: (context) =>
-            PuzzleScreen(1, "assets/images/poep"),
-        SelectLevelScreen.screenRoute: (context) => SelectLevelScreen(),
-      },
-      initialRoute: "/",
-      home: HomeScreen(),
+      title: 'Jigsaw',
+      theme: ThemeData.from(
+        colorScheme: ColorScheme.fromSwatch(
+          primarySwatch: Colors.blueGrey,
+          primaryColorDark: Colors.blueGrey.shade700,
+          backgroundColor: Colors.blueGrey.shade100,
+          cardColor: Colors.yellow,
+          errorColor: Colors.orange,
+        ),
+        textTheme: Typography.englishLike2018,
+      ).copyWith(
+        splashFactory: InkRipple.splashFactory,
+      ),
+      home: dataLoaded ? HomeScreen() : LoadingScreen(),
+    );
+  }
+}
+
+class LoadingScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Center(
+          child: Text("Puzzle Your Selfie"),
+        ),
+      ),
+      body: Center(
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const [
+          SizedBox(height: 80, width: 80, child: CircularProgressIndicator()),
+          SizedBox(
+            height: 20,
+          ),
+          Text(
+            "Waiting for data to be loaded...",
+            style: TextStyle(fontSize: 25),
+          ),
+        ],
+      )),
     );
   }
 }
 
 class HomeScreen extends StatefulWidget {
+  static const String screenRoute = "/home";
+
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<HomeScreen> createState() => HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  List<Level> levels = [];
+class HomeScreenState extends State<HomeScreen> {
+  int? index;
+  late String imagePath = "";
+  late int imageWidth;
+  late int imageHeight;
 
-  bool dataLoading = true;
+  Future<void> getImage(bool fromGallery) async {
+    final XFile? image;
+    if (fromGallery) {
+      image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    } else {
+      image = await ImagePicker().pickImage(source: ImageSource.camera);
+    }
+    Directory appDocumentsDirectory = await getApplicationDocumentsDirectory();
+    String path = appDocumentsDirectory.path;
+    File newFile = File(image!.path);
+    final bytes = newFile.readAsBytesSync();
+    final imageTest = await decodeImageFromList(bytes);
+    imageWidth = imageTest.width;
+    imageHeight = imageTest.height;
+    String newImagePath = "${path.toString()}/image1.jpeg";
+    setState(() {
+      ImageService.currentImagePath = newImagePath;
+      ImageService.currentImageWidth = imageWidth;
+      ImageService.currentImageHeight = imageHeight;
+      imagePath = newImagePath;
+    });
+    final File newImage = await newFile.copy(newImagePath);
+  }
 
-  Map<String, Object> arguments = new Map();
-
-  Future<void> getVariablesFromEnvironment() async {
-    final String data =
-        await service.rootBundle.loadString('assets/levels.yaml');
-    final YamlList yamlData = loadYaml(data);
-    List<dynamic> yamlDataList = yamlData[0]['levels'];
-    Map<int, dynamic> yamlMap = yamlDataList.asMap();
-    yamlMap.forEach(
-      (key, value) {
-        levels.add(Level(
-            value['level${key + 1}'][0]['number'],
-            value['level${key + 1}'][1]['amountOfPieces'],
-            value['level${key + 1}'][2]['levelPassed'] as bool));
-      },
-    );
+  void checkIfImageWasPresent() {
+    if (ImageService.currentImagePath != "") {
+      setState(() {
+        imagePath = ImageService.currentImagePath;
+        imageWidth = ImageService.currentImageWidth;
+        imageHeight = ImageService.currentImageHeight;
+      });
+    }
   }
 
   @override
   void initState() {
     super.initState();
-    getVariablesFromEnvironment().then((_) {
-      arguments['levels'] = levels;
-      setState(() {
-        dataLoading = false;
-      });
-    });
+    checkIfImageWasPresent();
+  }
+
+  @override
+  void didUpdateWidget(covariant HomeScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Puzzle Your Selfie'),
+        title: const Text("Puzzle Your Selfie"),
+        actions: [
+          TextButton(
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+              foregroundColor:
+                  MaterialStateProperty.all<Color>(Colors.white),
+            ),
+            onPressed: () {
+              setState(() {
+                LevelService.getVariablesFromEnvironment();
+              });
+            },
+            child: const Text("Reset"),
+          )
+        ],
       ),
+      backgroundColor: Colors.white,
       body: Center(
-        child: dataLoading
-            ? CircularProgressIndicator()
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(
-                        context,
-                        SelectLevelScreen.screenRoute,
-                        arguments: arguments,
-                      );
-                    },
-                    child: Text("Go to level selector"),
-                  ),
-                ],
-              ),
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 30,
+            ),
+            Wrap(
+              spacing: 15,
+              children: [
+                ...LevelService.levels.map((level) {
+                  return Padding(
+                    padding: const EdgeInsets.fromLTRB(5, 5, 5, 50),
+                    child: Column(
+                      children: [
+                        Text(
+                          "Level: ${level.number}",
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                        Text(level.passed ? "✅" : "❌"),
+                      ],
+                    ),
+                  );
+                }),
+              ],
+            ),
+            imagePath.isEmpty
+                ? Column(
+                    children: [
+                      const Text("Select image"),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            child: const Text("Gallery"),
+                            onPressed: () {
+                              getImage(true);
+                            },
+                          ),
+                          const SizedBox(width: 20.0),
+                          ElevatedButton(
+                            child: const Text("Camera"),
+                            onPressed: () {
+                              getImage(false);
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  )
+                : LevelService.allLevelsPassed
+                    ? Column(
+                        children: [
+                          const Text(
+                            "You completed all levels",
+                            style: TextStyle(fontSize: 25, color: Colors.amber),
+                          ),
+                          ElevatedButton(
+                              onPressed: () {
+                                setState(() {
+                                  LevelService.getVariablesFromEnvironment();
+                                });
+                              },
+                              child: const Text("Reset"))
+                        ],
+                      )
+                    : Column(
+                        children: [
+                          ElevatedButton(
+                            child: Text(
+                                "Go to level ${LevelService.levelsNotDone[0].number}"),
+                            onPressed: () {
+                              Navigator.pushReplacement(context,
+                                  MaterialPageRoute(
+                                builder: (context) {
+                                  return LevelScreen(
+                                    currentLevel: LevelService.levelsNotDone[0],
+                                    imageHeight: imageHeight,
+                                    imageWidth: imageWidth,
+                                    imagePath: imagePath,
+                                    puzzleGenerated: false,
+                                  );
+                                },
+                              ));
+                            },
+                          ),
+                          imagePath.isNotEmpty
+                              ? Image.file(
+                                  File(imagePath),
+                                  height: 350,
+                                )
+                              : const Text("Nog geen image"),
+                        ],
+                      ),
+          ],
+        ),
       ),
     );
   }

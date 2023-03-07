@@ -1,15 +1,61 @@
-- levels:
-  - level1:
+levels:
+  - level 1:
     - number: 1
-    - amountOfPieces: 9
-    - levelPassed: false
-
-  - level2:
+    - verticalAmount: 2
+    - horizontalAmount: 2
+    - time: 10
+    - passed: false
+  - level 2:
     - number: 2
-    - amountOfPieces: 16
-    - levelPassed: false
-
-  - level3:
+    - verticalAmount: 3
+    - horizontalAmount: 3
+    - time: 15
+    - passed: false
+  - level 3:
     - number: 3
-    - amountOfPieces: 25
-    - levelPassed: false
+    - verticalAmount: 4
+    - horizontalAmount: 4
+    - time: 20
+    - passed: false
+  - level 4:
+    - number: 4
+    - verticalAmount: 5
+    - horizontalAmount: 5
+    - time: 25
+    - passed: false
+  - level 5:
+    - number: 5
+    - verticalAmount: 6
+    - horizontalAmount: 6
+    - time: 40
+    - passed: false
+  - level 6:
+    - number: 6
+    - verticalAmount: 3
+    - horizontalAmount: 3
+    - time: 70
+    - passed: false
+  - level 7:
+    - number: 7
+    - verticalAmount: 3
+    - horizontalAmount: 3
+    - time: 70
+    - passed: false
+  - level 8:
+    - number: 8
+    - verticalAmount: 3
+    - horizontalAmount: 3
+    - time: 70
+    - passed: false
+  - level 9:
+    - number: 9
+    - verticalAmount: 3
+    - horizontalAmount: 3
+    - time: 70
+    - passed: false
+  - level 10:
+    - number: 10
+    - verticalAmount: 3
+    - horizontalAmount: 3
+    - time: 70
+    - passed: false

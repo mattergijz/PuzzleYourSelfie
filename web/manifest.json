@@ -1,6 +1,6 @@
 {
-    "name": "puzzle_app",
-    "short_name": "puzzle_app",
+    "name": "new_package_demo",
+    "short_name": "new_package_demo",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
