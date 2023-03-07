@@ -100,9 +100,13 @@ class HomeScreenState extends State<HomeScreen> {
   Future<void> getImage(bool fromGallery) async {
     final XFile? image;
     if (fromGallery) {
-      image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      image = await ImagePicker().pickImage(source: ImageSource.gallery
+          // , maxHeight: MediaQuery.of(context).size.height * 0.65, maxWidth: MediaQuery.of(context).size.width
+          );
     } else {
-      image = await ImagePicker().pickImage(source: ImageSource.camera);
+      image = await ImagePicker().pickImage(source: ImageSource.camera
+          // , maxHeight: MediaQuery.of(context).size.height * 0.65, maxWidth: MediaQuery.of(context).size.width
+          );
     }
     Directory appDocumentsDirectory = await getApplicationDocumentsDirectory();
     String path = appDocumentsDirectory.path;
@@ -142,6 +146,41 @@ class HomeScreenState extends State<HomeScreen> {
     super.didUpdateWidget(oldWidget);
   }
 
+  void showResetConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text(
+              "Are you sure you want to reset all progress? (this can't be reversed)"),
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    LevelService.getVariablesFromEnvironment();
+                    Navigator.of(context).pop();
+                  });
+                },
+                child: const Text("Yes"),
+              ),
+              const SizedBox(
+                width: 40,
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text("No"),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -151,13 +190,10 @@ class HomeScreenState extends State<HomeScreen> {
           TextButton(
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
-              foregroundColor:
-                  MaterialStateProperty.all<Color>(Colors.white),
+              foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
             ),
             onPressed: () {
-              setState(() {
-                LevelService.getVariablesFromEnvironment();
-              });
+              showResetConfirmationDialog();
             },
             child: const Text("Reset"),
           )
@@ -221,12 +257,11 @@ class HomeScreenState extends State<HomeScreen> {
                             style: TextStyle(fontSize: 25, color: Colors.amber),
                           ),
                           ElevatedButton(
-                              onPressed: () {
-                                setState(() {
-                                  LevelService.getVariablesFromEnvironment();
-                                });
-                              },
-                              child: const Text("Reset"))
+                            onPressed: () {
+                              showResetConfirmationDialog();
+                            },
+                            child: const Text("Reset"),
+                          )
                         ],
                       )
                     : Column(
@@ -235,26 +270,38 @@ class HomeScreenState extends State<HomeScreen> {
                             child: Text(
                                 "Go to level ${LevelService.levelsNotDone[0].number}"),
                             onPressed: () {
-                              Navigator.pushReplacement(context,
-                                  MaterialPageRoute(
-                                builder: (context) {
-                                  return LevelScreen(
-                                    currentLevel: LevelService.levelsNotDone[0],
-                                    imageHeight: imageHeight,
-                                    imageWidth: imageWidth,
-                                    imagePath: imagePath,
-                                    puzzleGenerated: false,
-                                  );
-                                },
-                              ));
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return LevelScreen(
+                                      currentLevel:
+                                          LevelService.levelsNotDone[0],
+                                      imageHeight: imageHeight,
+                                      imageWidth: imageWidth,
+                                      imagePath: imagePath,
+                                      puzzleGenerated: false,
+                                    );
+                                  },
+                                ),
+                              );
                             },
                           ),
                           imagePath.isNotEmpty
                               ? Image.file(
                                   File(imagePath),
-                                  height: 350,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.35,
                                 )
                               : const Text("Nog geen image"),
+                          ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                imagePath = "";
+                              });
+                            },
+                            child: const Text("Delete photo"),
+                          )
                         ],
                       ),
           ],

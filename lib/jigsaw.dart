@@ -63,8 +63,8 @@ class _JigsawPuzzleState extends State<JigsawPuzzle> {
       oneSec,
       (Timer timer) {
         if (LevelService.timerActive) {
-          if (_start == 0) {
-            if (mounted) {
+          if (mounted) {
+            if (_start == 0) {
               setState(() {
                 timer.cancel();
                 showDialog(
@@ -79,14 +79,10 @@ class _JigsawPuzzleState extends State<JigsawPuzzle> {
                             ElevatedButton(
                               child: const Text("Return to home"),
                               onPressed: () {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) {
-                                      return HomeScreen();
-                                    },
-                                  ),
-                                );
+                                Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(
+                                        builder: (context) => HomeScreen()),
+                                    (route) => false);
                               },
                             )
                           ],
@@ -96,9 +92,7 @@ class _JigsawPuzzleState extends State<JigsawPuzzle> {
                   },
                 );
               });
-            }
-          } else {
-            if (mounted) {
+            } else {
               setState(() {
                 _start--;
               });
@@ -112,7 +106,9 @@ class _JigsawPuzzleState extends State<JigsawPuzzle> {
   @override
   void dispose() {
     super.dispose();
-    _timer.cancel();
+    if (_start != widget.time || LevelService.timerActive) {
+      _timer.cancel();
+    }
   }
 
   //TODO: on timer end, show popup or something, game has to end
@@ -123,7 +119,8 @@ class _JigsawPuzzleState extends State<JigsawPuzzle> {
       mainAxisSize: MainAxisSize.min,
       children: [
         const SizedBox(height: 16),
-        Text("$_start", style: const TextStyle(fontSize: 30)),
+        Text("$_start",
+            style: const TextStyle(fontSize: 30, color: Colors.red)),
         const SizedBox(height: 16),
         JigsawWidget(
           puzzleGenerated: widget.puzzleGenerated,
@@ -339,9 +336,10 @@ class JigsawWidgetState extends State<JigsawWidget> {
     blocksNotifier.value.shuffle();
     // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
     blocksNotifier.notifyListeners();
-    setState(() {});
     widget.puzzleGenerated = true;
+    LevelService.timerActive = true;
     widget.startTimer!();
+    setState(() {});
   }
 
   @override

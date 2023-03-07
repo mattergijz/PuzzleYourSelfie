@@ -166,7 +166,8 @@ class PauseDialog extends StatelessWidget {
                     builder: (context) {
                       return AlertDialog(
                         title: const Text("Are you sure?"),
-                        content: Column(
+                        content: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             ElevatedButton(
                               child: const Text("Yes"),
@@ -177,6 +178,7 @@ class PauseDialog extends StatelessWidget {
                                     (route) => false);
                               },
                             ),
+                            SizedBox(width: 20,),
                             ElevatedButton(
                               child: const Text("No"),
                               onPressed: () {
