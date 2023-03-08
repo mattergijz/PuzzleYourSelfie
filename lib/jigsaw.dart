@@ -1,21 +1,17 @@
-// TODO remove me
-// ignore_for_file: public_member_api_docs
-
+import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
 import 'dart:typed_data';
 import 'dart:ui';
-import 'dart:async';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/gestures.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+// ignore: depend_on_referenced_packages
 import 'package:image/image.dart' as ui;
 import 'package:new_package_demo/main.dart';
 import 'package:new_package_demo/services/level_service.dart';
 
 import 'error.dart';
-import 'screens/level_screen.dart';
 
 class JigsawPuzzle extends StatefulWidget {
   const JigsawPuzzle({
