@@ -8,54 +8,174 @@ levels:
   - level 2:
     - number: 2
     - verticalAmount: 3
-    - horizontalAmount: 3
+    - horizontalAmount: 2
     - time: 15
     - passed: false
   - level 3:
     - number: 3
-    - verticalAmount: 4
-    - horizontalAmount: 4
-    - time: 20
+    - verticalAmount: 3
+    - horizontalAmount: 3
+    - time: 24
     - passed: false
   - level 4:
     - number: 4
-    - verticalAmount: 5
-    - horizontalAmount: 5
-    - time: 25
+    - verticalAmount: 3
+    - horizontalAmount: 4
+    - time: 32
     - passed: false
   - level 5:
     - number: 5
-    - verticalAmount: 6
-    - horizontalAmount: 6
-    - time: 40
+    - verticalAmount: 4
+    - horizontalAmount: 4
+    - time: 45
     - passed: false
   - level 6:
     - number: 6
-    - verticalAmount: 3
-    - horizontalAmount: 3
-    - time: 70
+    - verticalAmount: 4
+    - horizontalAmount: 5
+    - time: 68
     - passed: false
   - level 7:
     - number: 7
-    - verticalAmount: 3
-    - horizontalAmount: 3
-    - time: 70
+    - verticalAmount: 5
+    - horizontalAmount: 5
+    - time: 84
     - passed: false
   - level 8:
     - number: 8
-    - verticalAmount: 3
-    - horizontalAmount: 3
-    - time: 70
+    - verticalAmount: 5
+    - horizontalAmount: 6
+    - time: 90
     - passed: false
   - level 9:
     - number: 9
-    - verticalAmount: 3
-    - horizontalAmount: 3
-    - time: 70
+    - verticalAmount: 6
+    - horizontalAmount: 6
+    - time: 95
     - passed: false
   - level 10:
     - number: 10
-    - verticalAmount: 3
-    - horizontalAmount: 3
-    - time: 70
+    - verticalAmount: 6
+    - horizontalAmount: 7
+    - time: 125
+    - passed: false
+  - level 11:
+    - number: 11
+    - verticalAmount: 7
+    - horizontalAmount: 7
+    - time: 6000
+    - passed: false
+  - level 12:
+    - number: 12
+    - verticalAmount: 7
+    - horizontalAmount: 8
+    - time: 6000
+    - passed: false
+  - level 13: 
+    - number: 13
+    - verticalAmount: 8
+    - horizontalAmount: 8
+    - time: 6000
+    - passed: false
+  - level 14: 
+    - number: 14
+    - verticalAmount: 8
+    - horizontalAmount: 9
+    - time: 6000
+    - passed: false
+  - level 15: 
+    - number: 15
+    - verticalAmount: 9
+    - horizontalAmount: 9
+    - time: 6000
+    - passed: false
+  - level 16: 
+    - number: 16
+    - verticalAmount: 10
+    - horizontalAmount: 9
+    - time: 6000
+    - passed: false
+  - level 17: 
+    - number: 17
+    - verticalAmount: 10
+    - horizontalAmount: 10
+    - time: 6000
+    - passed: false
+  - level 18:
+    - number: 18
+    - verticalAmount: 10
+    - horizontalAmount: 11
+    - time: 6000
+    - passed: false
+  - level 19: 
+    - number: 19
+    - verticalAmount: 11
+    - horizontalAmount: 11
+    - time: 6000
+    - passed: false
+  - level 20: 
+    - number: 20
+    - verticalAmount: 12
+    - horizontalAmount: 11
+    - time: 6000
+    - passed: false
+  - level 21: 
+    - number: 21
+    - verticalAmount: 12
+    - horizontalAmount: 12
+    - time: 6000
+    - passed: false
+  - level 22: 
+    - number: 22
+    - verticalAmount: 13
+    - horizontalAmount: 12
+    - time: 6000
+    - passed: false
+  - level 23: 
+    - number: 23
+    - verticalAmount: 13
+    - horizontalAmount: 13
+    - time: 6000
+    - passed: false
+  - level 24: 
+    - number: 24
+    - verticalAmount: 14
+    - horizontalAmount: 13
+    - time: 6000
+    - passed: false
+  - level 25: 
+    - number: 25
+    - verticalAmount: 14
+    - horizontalAmount: 14
+    - time: 6000
+    - passed: false
+  - level 26: 
+    - number: 26
+    - verticalAmount: 14
+    - horizontalAmount: 15
+    - time: 6000
+    - passed: false
+  - level 27: 
+    - number: 27
+    - verticalAmount: 15
+    - horizontalAmount: 15
+    - time: 6000
+    - passed: false
+  - level 28: 
+    - number: 28
+    - verticalAmount: 16
+    - horizontalAmount: 15
+    - time: 6000
+    - passed: false
+  - level 29: 
+    - number: 29
+    - verticalAmount: 16
+    - horizontalAmount: 16
+    - time: 6000
+    - passed: false
+  - level 30:
+    - number: 30
+    - verticalAmount: 16
+    - horizontalAmount: 17
+    - time: 6000
     - passed: false
