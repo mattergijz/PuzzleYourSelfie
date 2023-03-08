@@ -1,3 +1,3 @@
 class Constants {
-  static String macAddress = "";
+  static String macAddress = "xx:xx:xx:xx";
 }

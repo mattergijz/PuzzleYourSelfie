@@ -1,15 +1,18 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:http/http.dart' as http;
 
 class DiagnosticsService {
-  String finishedUrl = "localhost:5000/api/finished";
-  String timeUpUrl = "localhost:5000/api/finished";
+  String finishedUrl = "http://192.168.178.251:5000/api/finished";
+  String timeUpUrl = "http://localhost:5000/api/finished";
+  final headers = {'Content-Type': 'application/json'};
 
-  Future<bool> sendLevelFinished(Map<String, dynamic> data) async {
-    var response = await http.post(Uri.parse(finishedUrl), body: data);
+  Future<bool> sendLevelFinished(String data) async {
+    var response = await http.post(Uri.parse(finishedUrl), body: data, headers: headers);
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
+      print(data);
       return true;
     } else {
       print('Request failed with status: ${response.statusCode}.');
@@ -17,14 +20,16 @@ class DiagnosticsService {
     }
   }
 
-  Map<String, dynamic> createPostMessage(
-      String macAddress, int levelNumber, bool finished, int time) {
-    return {
-      "macAddress": macAddress,
-      "levelNumber":levelNumber,
-      "finished": finished,
-      "time": time,
-      "timestamp": DateTime.now()
-    };
+  String createPostMessage(String macAddress, int levelNumber,
+      bool finished, int time, int piecesLeft) {
+        print(macAddress);
+    return jsonEncode({
+      "mac_address": macAddress.toString(),
+      "level_number": levelNumber.toString(),
+      "finished": finished.toString(),
+      "time": time.toString(),
+      "pieces_left": piecesLeft.toString(),
+      "timestamp": DateTime.now().toString()
+    });
   }
 }

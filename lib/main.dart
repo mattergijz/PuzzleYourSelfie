@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:io';
 import 'package:flutter/services.dart' as service;
 import 'package:new_package_demo/constants.dart';
+import 'package:new_package_demo/services/diagnostics_service.dart';
 import 'package:new_package_demo/services/mac_address_service.dart';
 import 'package:yaml/yaml.dart';
 
@@ -35,7 +36,8 @@ class _MyAppState extends State<MyApp> {
         dataLoaded = true;
       });
     });
-    MacAddressService.getMacAddress();
+    // MacAddressService.getMacAddress();
+    print(DateTime.now());
     super.initState();
   }
 
@@ -99,6 +101,7 @@ class HomeScreenState extends State<HomeScreen> {
   late String imagePath = "";
   late int imageWidth;
   late int imageHeight;
+  DiagnosticsService diagnosticsService = DiagnosticsService();
 
   Future<void> getImage(bool fromGallery) async {
     final XFile? image;
@@ -228,6 +231,13 @@ class HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
+            ElevatedButton(
+                onPressed: () {
+                  var data = diagnosticsService.createPostMessage(Constants.macAddress, 1, true, 10, 0);
+                  print(data);
+                  diagnosticsService.sendLevelFinished(data);
+                },
+                child: const Text("send test data")),
             imagePath.isEmpty
                 ? Column(
                     children: [
