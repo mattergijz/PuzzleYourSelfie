@@ -418,7 +418,7 @@ class JigsawWidgetState extends State<JigsawWidget> {
 
                             // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
                             blocksNotifier.notifyListeners();
-                            //TODO: make sure pointer event stops, so user isnt automatically dragging new puzzle piece
+                            
                             setState(() {
                               blockWasSuccess(blockNotDone.length);
                             });
