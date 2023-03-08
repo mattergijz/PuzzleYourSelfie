@@ -206,27 +206,27 @@ class HomeScreenState extends State<HomeScreen> {
       body: Center(
         child: Column(
           children: [
-            const SizedBox(
-              height: 30,
-            ),
-            Wrap(
-              spacing: 15,
-              children: [
-                ...LevelService.levels.map((level) {
-                  return Padding(
-                    padding: const EdgeInsets.fromLTRB(5, 5, 5, 50),
-                    child: Column(
-                      children: [
-                        Text(
-                          "Level: ${level.number}",
-                          style: const TextStyle(color: Colors.black),
-                        ),
-                        Text(level.passed ? "✅" : "❌"),
-                      ],
-                    ),
-                  );
-                }),
-              ],
+            const SizedBox(height: 30),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  ...LevelService.levels.map((level) {
+                    return Padding(
+                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 50),
+                      child: Column(
+                        children: [
+                          Text(
+                            "Level: ${level.number}",
+                            style: const TextStyle(color: Colors.black),
+                          ),
+                          Text(level.passed ? "✅" : "❌"),
+                        ],
+                      ),
+                    );
+                  }),
+                ],
+              ),
             ),
             imagePath.isEmpty
                 ? Column(

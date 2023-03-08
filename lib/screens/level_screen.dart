@@ -155,46 +155,49 @@ class PauseDialog extends StatelessWidget {
       ),
       actions: actions,
       elevation: 10,
-      content: Container(
-          height: 350,
-          child: Column(
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: const Text("Are you sure?"),
-                        content: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            ElevatedButton(
-                              child: const Text("Yes"),
-                              onPressed: () {
-                                Navigator.of(context).pushAndRemoveUntil(
-                                    MaterialPageRoute(
-                                        builder: (context) => HomeScreen()),
-                                    (route) => false);
-                              },
-                            ),
-                            SizedBox(width: 20,),
-                            ElevatedButton(
-                              child: const Text("No"),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            )
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                },
-                child: const Text("Home"),
-              ),
-            ],
-          )),
+      content: SizedBox(
+        height: 350,
+        child: Column(
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text("Are you sure?"),
+                      content: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            child: const Text("Yes"),
+                            onPressed: () {
+                              Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                      builder: (context) => HomeScreen()),
+                                  (route) => false);
+                            },
+                          ),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          ElevatedButton(
+                            child: const Text("No"),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          )
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
+              child: const Text("Home"),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
