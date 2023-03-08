@@ -1,6 +1,8 @@
 import 'dart:collection';
 import 'dart:io';
 import 'package:flutter/services.dart' as service;
+import 'package:new_package_demo/constants.dart';
+import 'package:new_package_demo/services/mac_address_service.dart';
 import 'package:yaml/yaml.dart';
 
 import 'package:flutter/material.dart';
@@ -33,6 +35,7 @@ class _MyAppState extends State<MyApp> {
         dataLoaded = true;
       });
     });
+    MacAddressService.getMacAddress();
     super.initState();
   }
 
