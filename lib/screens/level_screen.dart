@@ -5,8 +5,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:new_package_demo/main.dart';
 
+import '../constants.dart';
 import '../jigsaw.dart';
 import '../models/level_model.dart';
+import '../services/diagnostics_service.dart';
 import '../services/level_service.dart';
 
 class LevelScreen extends StatefulWidget {
@@ -114,6 +116,7 @@ class _LevelScreenState extends State<LevelScreen> {
                 verticalAmount: widget.currentLevel.verticalAmount,
                 horizontalAmount: widget.currentLevel.horizontalAmount,
                 image: widget.imagePath,
+                currentLevel: widget.currentLevel,
                 onFinished: () {
                   LevelService.passLevel(widget.currentLevel);
                   Navigator.pushReplacement(

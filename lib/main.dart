@@ -4,7 +4,9 @@ import 'package:flutter/services.dart' as service;
 import 'package:new_package_demo/constants.dart';
 import 'package:new_package_demo/services/diagnostics_service.dart';
 import 'package:new_package_demo/services/mac_address_service.dart';
+import 'package:uuid/uuid.dart';
 import 'package:yaml/yaml.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -29,6 +31,37 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool dataLoaded = false;
+
+  Future<void> testDataTextFile() async {
+    String data = await service.rootBundle.loadString('assets/userData.txt');
+    print(data);
+    if (data == ".") {
+      // String path = "assets/userData.txt";
+
+      File file = File('assets/userData.txt');
+      file.writeAsString(const Uuid().v1());
+    }
+  }
+
+  void _loadUuid() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if (prefs.containsKey('uuid')) {
+      var test = prefs.getString('uuid')!;
+      setState(() {
+        Constants.uuid = test;
+      });
+   } else {
+      String uuid = Uuid().v4();
+
+      await prefs.setString('uuid', uuid);
+
+      setState(() {
+        Constants.uuid = uuid;
+      });
+    }
+  }
+
   @override
   void initState() {
     LevelService.getVariablesFromEnvironment().then((_) {
@@ -36,8 +69,7 @@ class _MyAppState extends State<MyApp> {
         dataLoaded = true;
       });
     });
-    // MacAddressService.getMacAddress();
-    print(DateTime.now());
+    _loadUuid();
     super.initState();
   }
 
@@ -233,7 +265,8 @@ class HomeScreenState extends State<HomeScreen> {
             ),
             ElevatedButton(
                 onPressed: () {
-                  var data = diagnosticsService.createPostMessage(Constants.macAddress, 1, true, 10, 0);
+                  var data = diagnosticsService.createPostMessage(
+                      Constants.macAddress, 1, true, 10, 0);
                   print(data);
                   diagnosticsService.sendLevelFinished(data);
                 },

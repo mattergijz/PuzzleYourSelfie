@@ -8,10 +8,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 // ignore: depend_on_referenced_packages
 import 'package:image/image.dart' as ui;
+import 'package:new_package_demo/constants.dart';
 import 'package:new_package_demo/main.dart';
+import 'package:new_package_demo/services/diagnostics_service.dart';
 import 'package:new_package_demo/services/level_service.dart';
 
 import 'error.dart';
+import 'models/level_model.dart';
 
 class JigsawPuzzle extends StatefulWidget {
   const JigsawPuzzle({
@@ -24,6 +27,7 @@ class JigsawPuzzle extends StatefulWidget {
     required this.aspectRatio,
     required this.puzzleGenerated,
     required this.time,
+    required this.currentLevel,
     this.onFinished,
     this.onBlockSuccess,
     this.outlineCanvas = true,
@@ -44,6 +48,7 @@ class JigsawPuzzle extends StatefulWidget {
   final GlobalKey<JigsawWidgetState> puzzleKey;
   final int? index;
   final double aspectRatio;
+  final Level currentLevel;
 
   @override
   _JigsawPuzzleState createState() => _JigsawPuzzleState();
@@ -52,7 +57,8 @@ class JigsawPuzzle extends StatefulWidget {
 class _JigsawPuzzleState extends State<JigsawPuzzle> {
   late Timer _timer;
   late int _start = widget.time;
-
+  DiagnosticsService diagnosticsService = DiagnosticsService();
+  
   void startTimer() {
     const oneSec = Duration(seconds: 1);
     _timer = Timer.periodic(
@@ -61,8 +67,11 @@ class _JigsawPuzzleState extends State<JigsawPuzzle> {
         if (LevelService.timerActive) {
           if (mounted) {
             if (_start == 0) {
+              var data = diagnosticsService.createPostMessage(Constants.uuid, widget.currentLevel.number, false, 0, Constants.remainingBlocks);
+              diagnosticsService.sendLevelFinished(data);
               setState(() {
                 timer.cancel();
+                
                 showDialog(
                   context: context,
                   builder: (context) {
@@ -124,7 +133,8 @@ class _JigsawPuzzleState extends State<JigsawPuzzle> {
           aspectRatio: widget.aspectRatio,
           index: widget.index,
           callbackFinish: () {
-            print("in callback finish");
+            var data = diagnosticsService.createPostMessage(Constants.uuid, widget.currentLevel.number, true, _start, 0);
+            diagnosticsService.sendLevelFinished(data);
             if (widget.onFinished != null && _start != 0) {
               print("in if");
               setState(() {
@@ -358,6 +368,7 @@ class JigsawWidgetState extends State<JigsawWidget> {
             final List<BlockClass> blockDone = blocks
                 .where((block) => block.jigsawBlockWidget.imageBox.isDone)
                 .toList();
+            Constants.remainingBlocks = blockNotDone.length;
 
             return GestureDetector(
               child: Column(
@@ -369,6 +380,9 @@ class JigsawWidgetState extends State<JigsawWidget> {
                       width: double.infinity,
                       child: Listener(
                         onPointerUp: (event) {
+                          if (blockNotDone.isNotEmpty){
+                            Constants.remainingBlocks = blockNotDone.length;
+                          }
                           if (blockNotDone.isEmpty && blockDone.isNotEmpty) {
                             reset();
                             widget.callbackFinish?.call();
